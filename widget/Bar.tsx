@@ -13,6 +13,8 @@ import AstalMpris from "gi://AstalMpris?version=0.1";
 import AstalApps from "gi://AstalApps?version=0.1";
 import GLib from "gi://GLib?version=2.0";
 
+type StringMap = { [key: string]: string };
+
 function Workspaces() {
   const hypr = Hyprland.get_default();
 
@@ -22,6 +24,36 @@ function Workspaces() {
     ws.slice().sort((a, b) => a.get_id() - b.get_id()),
   );
 
+  const wsMap: StringMap = {
+    // "1": "𝍠",
+    // "2": "𝍡",
+    // "3": "𝍢",
+    // "4": "𝍢",
+    // "5": "𝍤",
+    // "6": "𝍥",
+    // "7": "𝍦",
+    // "8": "𝍧",
+    // "9": "𝍨",
+    // "1": "I",
+    // "2": "II",
+    // "3": "III",
+    // "4": "IV",
+    // "5": "V",
+    // "6": "VI",
+    // "7": "VII",
+    // "8": "VIII",
+    // "9": "IX",
+    "1": "𓅰",
+    "2": "𓅺",
+    "3": "𓅹",
+    "4": "𓆏",
+    "5": "𓆜",
+    "6": "𝍥",
+    "7": "𝍦",
+    "8": "𝍧",
+    "9": "𝍨",
+  };
+
   return (
     <box>
       <For each={workspacesReversed}>
@@ -30,12 +62,16 @@ function Workspaces() {
             <With value={focusedWs}>
               {(fws) => (
                 <button
-                  class={fws.get_id() == ws.get_id() ? "focused-workspace" : ""}
+                  class={
+                    "ws-button" +
+                    (fws.get_id() == ws.get_id() ? " focused-workspace" : "")
+                  }
                   onClicked={() =>
                     hypr.dispatch("workspace", ws.get_id().toString())
                   }
                 >
-                  <label label={`${ws.get_name()}`} />
+                  {/* <label label={`${ws.get_name() ?? ""}`} /> */}
+                  <label label={`${wsMap[ws.get_name()] ?? ""}`} />
                 </button>
               )}
             </With>

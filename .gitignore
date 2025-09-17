@@ -1,2 +1,5 @@
 node_modules/
 @girs/
+
+# dynamically generated from pywal
+_colors.scss
