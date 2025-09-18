@@ -103,34 +103,39 @@ function AudioOutput() {
 
 function Battery() {
   const battery = AstalBattery.get_default();
-  const powerprofiles = AstalPowerProfiles.get_default();
 
   const percent = createBinding(
     battery,
     "percentage",
   )((p) => `${Math.floor(p * 100)}%`);
 
-  const setProfile = (profile: string) => {
-    powerprofiles.set_active_profile(profile);
-  };
-
+  print(battery.percentage);
   return (
-    <menubutton visible={createBinding(battery, "isPresent")}>
-      <box>
-        <image iconName={createBinding(battery, "iconName")} />
-        <label label={percent} />
-      </box>
-      <popover>
-        <box orientation={Gtk.Orientation.VERTICAL}>
-          {powerprofiles.get_profiles().map(({ profile }) => (
-            <button onClicked={() => setProfile(profile)}>
-              <label label={profile} xalign={0} />
-            </button>
-          ))}
-        </box>
-      </popover>
-    </menubutton>
+    <levelbar
+      class={"grackle-battery"}
+      value={createBinding(battery, "percentage")}
+      minValue={0}
+      maxValue={1}
+      widthRequest={10}
+      orientation={Gtk.Orientation.VERTICAL}
+      inverted={true}
+      $={(self) => {
+        self.add_offset_value("low", 0.2);
+        self.add_offset_value("medium", 0.7);
+        self.add_offset_value("high", 1.0);
+      }}
+    >
+      <label label={percent} />
+    </levelbar>
   );
+  // return (
+  //   {/* <menubutton visible={createBinding(battery, "isPresent")}> */}
+  //   {/*   <box> */}
+  //   {/*     <image iconName={createBinding(battery, "iconName")} /> */}
+  //   {/*     <label label={percent} /> */}
+  //   {/*   </box> */}
+  //   {/* </progress> */}
+  // );
 }
 
 function Mpris() {

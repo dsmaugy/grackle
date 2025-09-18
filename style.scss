@@ -19,12 +19,37 @@ window.Bar {
 
   .ws-button {
     border-radius: 32px;
-    font-size: 1.65rem;
+    // font-size: 1.5rem;
     // font-style: italic;
   }
 
   .focused-workspace {
     background-color: rgba(colors.$color10, 1);
     border: 2px solid rgba(colors.$color8, 1);
+  }
+
+  .grackle-battery {
+    margin: 6px;
+    font-size: 0.8rem;
+
+    trough {
+      block {
+        // border-radius: 16px;
+        border-radius: 8px;
+      }
+
+      block.filled {
+        background: rgba(colors.$background, 0.6);
+        // border-radius: 16px;
+      }
+
+      block.filled.high {
+        // background: rgb(100, 255, 100);
+      }
+
+      block.empty {
+        // border-radius: 16px;
+      }
+    }
   }
 }
