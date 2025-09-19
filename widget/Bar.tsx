@@ -3,7 +3,7 @@ import { Astal, Gtk, Gdk } from "ags/gtk4";
 import { execAsync } from "ags/process";
 import { createPoll } from "ags/time";
 import Hyprland from "gi://AstalHyprland?version=0.1";
-import { createBinding, For, With } from "ags";
+import { createBinding, createComputed, For, With } from "ags";
 import AstalWp from "gi://AstalWp?version=0.1";
 import AstalBattery from "gi://AstalBattery?version=0.1";
 import AstalPowerProfiles from "gi://AstalPowerProfiles?version=0.1";
@@ -25,24 +25,6 @@ function Workspaces() {
   );
 
   const wsMap: StringMap = {
-    // "1": "𝍠",
-    // "2": "𝍡",
-    // "3": "𝍢",
-    // "4": "𝍢",
-    // "5": "𝍤",
-    // "6": "𝍥",
-    // "7": "𝍦",
-    // "8": "𝍧",
-    // "9": "𝍨",
-    // "1": "I",
-    // "2": "II",
-    // "3": "III",
-    // "4": "IV",
-    // "5": "V",
-    // "6": "VI",
-    // "7": "VII",
-    // "8": "VIII",
-    // "9": "IX",
     "1": "𓅰",
     "2": "𓅺",
     "3": "𓅹",
@@ -104,38 +86,31 @@ function AudioOutput() {
 function Battery() {
   const battery = AstalBattery.get_default();
 
-  const percent = createBinding(
-    battery,
-    "percentage",
-  )((p) => `${Math.floor(p * 100)}%`);
+  const pctBinding = createBinding(battery, "percentage");
+  const chargeBinding = createBinding(battery, "charging");
+  const pctLabel = createComputed(
+    [pctBinding, chargeBinding],
+    (p, c) => `B: ${Math.floor(p * 100)} ${c ? "↑" : "↓"}`,
+  );
 
-  print(battery.percentage);
   return (
     <levelbar
-      class={"grackle-battery"}
+      class={chargeBinding((b) =>
+        b ? "grackle-battery charging" : "grackle-battery",
+      )}
       value={createBinding(battery, "percentage")}
       minValue={0}
       maxValue={1}
-      widthRequest={10}
-      orientation={Gtk.Orientation.VERTICAL}
-      inverted={true}
+      widthRequest={70}
       $={(self) => {
         self.add_offset_value("low", 0.2);
         self.add_offset_value("medium", 0.7);
         self.add_offset_value("high", 1.0);
       }}
     >
-      <label label={percent} />
+      <label label={pctLabel} />
     </levelbar>
   );
-  // return (
-  //   {/* <menubutton visible={createBinding(battery, "isPresent")}> */}
-  //   {/*   <box> */}
-  //   {/*     <image iconName={createBinding(battery, "iconName")} /> */}
-  //   {/*     <label label={percent} /> */}
-  //   {/*   </box> */}
-  //   {/* </progress> */}
-  // );
 }
 
 function Mpris() {
@@ -244,6 +219,9 @@ function Wireless() {
   const network = AstalNetwork.get_default();
   const wifi = createBinding(network, "wifi");
 
+  print(network.wifi.activeAccessPoint.ssid);
+  print(network.wifi.activeAccessPoint.strength);
+
   const sorted = (arr: Array<AstalNetwork.AccessPoint>) => {
     return arr
       .filter((ap) => !!ap.ssid)
@@ -313,7 +291,6 @@ function Clock({ format = "%H:%M" }) {
 }
 
 export default function Bar(gdkmonitor: Gdk.Monitor) {
-  // const time = createPoll("", 1000, "date");
   const { TOP, LEFT, RIGHT } = Astal.WindowAnchor;
 
   return (
