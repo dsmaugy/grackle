@@ -28,6 +28,18 @@ window.Bar {
     border: 2px solid rgba(colors.$color8, 1);
   }
 
+  .vpn-icon {
+    border-radius: 8px;
+    margin: 2px;
+    padding: 0px 4px;
+    background: rgba(colors.$background, 0.6);
+
+    image {
+      color: rgba(colors.$color10, 1);
+      transform: scale(1.5);
+    }
+  }
+
   .grackle-battery {
     margin: 5px 2px;
     font-size: 0.9rem;

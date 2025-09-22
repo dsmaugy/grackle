@@ -218,9 +218,20 @@ function Tray() {
 function Wireless() {
   const network = AstalNetwork.get_default();
   const wifi = createBinding(network, "wifi");
+  const ap = wifi((w) => w.activeAccessPoint);
+  // const ip = wifi((w) =>
+  //   createBinding(
+  //     w,
+  //     "activeConnection",
+  //   )((c) =>
+  //     createBinding(c, "ipv4Config")((ip) => createBinding(ip, "gateway")),
+  //   ),
+  // );
 
-  print(network.wifi.activeAccessPoint.ssid);
-  print(network.wifi.activeAccessPoint.strength);
+  // TODO: poll wifi strength instead of making accessor
+  print(network.wifi.activeAccessPoint?.ssid);
+  print(network.wifi.activeAccessPoint?.strength);
+  print(network.wifi.activeConnection?.ip4Config.gateway);
 
   const sorted = (arr: Array<AstalNetwork.AccessPoint>) => {
     return arr
@@ -240,34 +251,103 @@ function Wireless() {
   }
 
   return (
-    <box visible={wifi(Boolean)}>
-      <With value={wifi}>
-        {(wifi) =>
-          wifi && (
-            <menubutton>
-              <image iconName={createBinding(wifi, "iconName")} />
-              <popover>
-                <box orientation={Gtk.Orientation.VERTICAL}>
-                  <For each={createBinding(wifi, "accessPoints")(sorted)}>
-                    {(ap: AstalNetwork.AccessPoint) => (
-                      <button onClicked={() => connect(ap)}>
-                        <box spacing={4}>
-                          <image iconName={createBinding(ap, "iconName")} />
-                          <label label={createBinding(ap, "ssid")} />
-                          <image
-                            iconName="object-select-symbolic"
-                            visible={createBinding(
-                              wifi,
-                              "activeAccessPoint",
-                            )((active) => active === ap)}
-                          />
-                        </box>
-                      </button>
-                    )}
-                  </For>
-                </box>
-              </popover>
-            </menubutton>
+    <box>
+      <With value={ap}>
+        {(ap) =>
+          ap && (
+            <box orientation={Gtk.Orientation.VERTICAL}>
+              <label label={createBinding(ap, "ssid")} />
+              <label
+                label={createBinding(ap, "strength")((s) => s.toString())}
+              />
+            </box>
+          )
+        }
+      </With>
+    </box>
+  );
+
+  // return (
+  //   <box visible={wifi(Boolean)}>
+  //     <With value={wifi}>
+  //       {(wifi) =>
+  //         wifi && (
+  //           <menubutton>
+  //             <image iconName={createBinding(wifi, "iconName")} />
+  //             <popover>
+  //               <box orientation={Gtk.Orientation.VERTICAL}>
+  //                 <For each={createBinding(wifi, "accessPoints")(sorted)}>
+  //                   {(ap: AstalNetwork.AccessPoint) => (
+  //                     <button onClicked={() => connect(ap)}>
+  //                       <box spacing={4}>
+  //                         <image iconName={createBinding(ap, "iconName")} />
+  //                         <label label={createBinding(ap, "ssid")} />
+  //                         <image
+  //                           iconName="object-select-symbolic"
+  //                           visible={createBinding(
+  //                             wifi,
+  //                             "activeAccessPoint",
+  //                           )((active) => active === ap)}
+  //                         />
+  //                       </box>
+  //                     </button>
+  //                   )}
+  //                 </For>
+  //               </box>
+  //             </popover>
+  //           </menubutton>
+  //         )
+  //       }
+  //     </With>
+  //   </box>
+  // );
+}
+
+// only handles 1 wireguard connection
+function WireguardStatus() {
+  const getWgName = async () => {
+    let query: string;
+    try {
+      query = await execAsync(["ip", "-o", "link", "show"]);
+    } catch (e) {
+      return null;
+    }
+    const matches = query.match(/[^\n]\d+: (wg_[a-zA-Z0-9_]+)/);
+    if (!matches || matches.length < 2) {
+      return null;
+    }
+    return matches[1];
+  };
+
+  const getWgCity = () => {};
+
+  const wgInterfaces = createPoll(null, 2000, getWgName);
+  const wgObj = wgInterfaces((i) => {
+    if (!i) return null;
+
+    const shortName = i
+      .split("_")
+      .reduce((prev, curr) => prev + curr[0].toUpperCase(), "");
+
+    return {
+      interface: i,
+      shortName: shortName,
+    };
+  });
+
+  return (
+    <box>
+      <With value={wgObj}>
+        {(wgObj) =>
+          wgObj && (
+            <box class="vpn-icon">
+              <label label="WG" />
+              <image
+                iconName="network-vpn-symbolic"
+                tooltipText={wgObj.interface}
+              />
+              <label label={wgObj.shortName} />
+            </box>
           )
         }
       </With>
@@ -317,6 +397,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
           <Wireless />
           <Battery />
           <Clock />
+          <WireguardStatus />
           <Tray />
         </box>
       </centerbox>
