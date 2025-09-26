@@ -11,16 +11,10 @@ window.Bar {
     border: 2px ridge rgba(colors.$foreground, 0.9);
   }
 
-  button {
-    border-radius: 8px;
-    margin: 2px;
-    background: rgba(colors.$background, 0.6);
-  }
-
   .ws-button {
     border-radius: 32px;
-    // font-size: 1.5rem;
-    // font-style: italic;
+    margin: 2px;
+    background: rgba(colors.$background, 0.6);
   }
 
   .focused-workspace {
@@ -30,7 +24,6 @@ window.Bar {
 
   .vpn-icon {
     border-radius: 8px;
-    margin: 2px;
     padding: 0px 4px;
     background: rgba(colors.$background, 0.6);
 
@@ -73,5 +66,28 @@ window.Bar {
         background: rgba(#31d663, 0.65);
       }
     }
+  }
+
+  .vpn-button {
+    button.toggle {
+      padding: 0;
+      background-color: rgba(0, 0, 0, 0);
+    }
+  }
+}
+
+button {
+  border-radius: 8px;
+  margin: 2px;
+  background: rgba(colors.$background, 0.6);
+}
+
+popover.background {
+  arrow {
+    background-color: rgba(colors.$color9, 0.6);
+  }
+
+  contents {
+    background-color: rgba(colors.$color9, 0.9);
   }
 }

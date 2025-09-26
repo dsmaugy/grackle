@@ -2,67 +2,16 @@ import app from "ags/gtk4/app";
 import { Astal, Gtk, Gdk } from "ags/gtk4";
 import { execAsync } from "ags/process";
 import { createPoll } from "ags/time";
-import Hyprland from "gi://AstalHyprland?version=0.1";
 import { createBinding, createComputed, For, With } from "ags";
 import AstalWp from "gi://AstalWp?version=0.1";
 import AstalBattery from "gi://AstalBattery?version=0.1";
-import AstalPowerProfiles from "gi://AstalPowerProfiles?version=0.1";
 import AstalNetwork from "gi://AstalNetwork?version=0.1";
 import AstalTray from "gi://AstalTray?version=0.1";
 import AstalMpris from "gi://AstalMpris?version=0.1";
 import AstalApps from "gi://AstalApps?version=0.1";
 import GLib from "gi://GLib?version=2.0";
-
-type StringMap = { [key: string]: string };
-
-function Workspaces() {
-  const hypr = Hyprland.get_default();
-
-  const focusedWs = createBinding(hypr, "focused_workspace");
-  const workspaces = createBinding(hypr, "workspaces");
-  const workspacesReversed = workspaces((ws) =>
-    ws.slice().sort((a, b) => a.get_id() - b.get_id()),
-  );
-
-  const wsMap: StringMap = {
-    "1": "𓅰",
-    "2": "𓅺",
-    "3": "𓅹",
-    "4": "𓆏",
-    "5": "𓆜",
-    "6": "𝍥",
-    "7": "𝍦",
-    "8": "𝍧",
-    "9": "𝍨",
-  };
-
-  return (
-    <box>
-      <For each={workspacesReversed}>
-        {(ws) => (
-          <box>
-            <With value={focusedWs}>
-              {(fws) => (
-                <button
-                  class={
-                    "ws-button" +
-                    (fws.get_id() == ws.get_id() ? " focused-workspace" : "")
-                  }
-                  onClicked={() =>
-                    hypr.dispatch("workspace", ws.get_id().toString())
-                  }
-                >
-                  {/* <label label={`${ws.get_name() ?? ""}`} /> */}
-                  <label label={`${wsMap[ws.get_name()] ?? ""}`} />
-                </button>
-              )}
-            </With>
-          </box>
-        )}
-      </For>
-    </box>
-  );
-}
+import { WireguardStatus } from "./VPN";
+import { Workspaces } from "./Workspaces";
 
 function AudioOutput() {
   const { defaultSpeaker: speaker } = AstalWp.get_default()!;
@@ -303,58 +252,6 @@ function Wireless() {
   // );
 }
 
-// only handles 1 wireguard connection
-function WireguardStatus() {
-  const getWgName = async () => {
-    let query: string;
-    try {
-      query = await execAsync(["ip", "-o", "link", "show"]);
-    } catch (e) {
-      return null;
-    }
-    const matches = query.match(/[^\n]\d+: (wg_[a-zA-Z0-9_]+)/);
-    if (!matches || matches.length < 2) {
-      return null;
-    }
-    return matches[1];
-  };
-
-  const getWgCity = () => {};
-
-  const wgInterfaces = createPoll(null, 2000, getWgName);
-  const wgObj = wgInterfaces((i) => {
-    if (!i) return null;
-
-    const shortName = i
-      .split("_")
-      .reduce((prev, curr) => prev + curr[0].toUpperCase(), "");
-
-    return {
-      interface: i,
-      shortName: shortName,
-    };
-  });
-
-  return (
-    <box>
-      <With value={wgObj}>
-        {(wgObj) =>
-          wgObj && (
-            <box class="vpn-icon">
-              <label label="WG" />
-              <image
-                iconName="network-vpn-symbolic"
-                tooltipText={wgObj.interface}
-              />
-              <label label={wgObj.shortName} />
-            </box>
-          )
-        }
-      </With>
-    </box>
-  );
-}
-
 function Clock({ format = "%H:%M" }) {
   const time = createPoll("", 1000, () => {
     return GLib.DateTime.new_now_local().format(format)!;
@@ -403,36 +300,4 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
       </centerbox>
     </window>
   );
-
-  // return (
-  //   <window
-  //     visible
-  //     name="bar"
-  //     class="Bar"
-  //     gdkmonitor={gdkmonitor}
-  //     exclusivity={Astal.Exclusivity.EXCLUSIVE}
-  //     anchor={TOP | LEFT | RIGHT}
-  //     application={app}
-  //   >
-  //     <centerbox cssName="centerbox">
-  //       <button
-  //         $type="start"
-  //         onClicked={() => execAsync("echo hello").then(console.log)}
-  //         hexpand
-  //         halign={Gtk.Align.CENTER}
-  //       >
-  //         <label label="Welcome to AGS!" />
-  //       </button>
-  //       {/* <box $type="center" /> */}
-  //       <menubutton $type="end" hexpand halign={Gtk.Align.CENTER}>
-  //         <label label={time} />
-  //         <popover>
-  //           <Gtk.Calendar />
-  //         </popover>
-  //       </menubutton>
-  //
-  //       <Workspaces hypr={hypr} />
-  //     </centerbox>
-  //   </window>
-  // );
 }
