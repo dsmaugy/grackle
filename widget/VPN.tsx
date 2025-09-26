@@ -19,8 +19,8 @@ const WireguardDetails = () => {
 
   return (
     <box>
-      <label label="woo"></label>
-      <label label="medford massachusetts"></label>
+      <label label="<b>woo</b><i>hmm</i>" wrap={true} useMarkup={true}></label>
+      <label label="westford massachusetts"></label>
     </box>
   );
   // return (
