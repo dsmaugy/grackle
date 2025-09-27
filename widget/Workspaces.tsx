@@ -43,7 +43,6 @@ export const Workspaces = () => {
                     }
                   }}
                 >
-                  {/* <label label={`${ws.get_name() ?? ""}`} /> */}
                   <label label={`${wsMap[ws.get_name()] ?? ""}`} />
                 </button>
               )}

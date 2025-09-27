@@ -2,41 +2,36 @@ import { createState, With } from "ags";
 import { execAsync } from "ags/process";
 import { createPoll } from "ags/time";
 import { GetInfoFromIP, IpInfo } from "../util";
+import { Gtk } from "ags/gtk4";
 
 const WireguardDetails = () => {
   const [ipDetails, setIpDetails] = createState<IpInfo | null>(null);
 
-  // GetInfoFromIP()
-  //   .then((info) => {
-  //     if (info) {
-  //       setIpDetails(info);
-  //       print("IP Info updated");
-  //     }
-  //   })
-  //   .catch((e) => {
-  //     print(e);
-  //   });
+  GetInfoFromIP()
+    .then((info) => {
+      if (info) {
+        setIpDetails(info);
+        print("IP Info updated");
+      }
+    })
+    .catch((e) => {
+      print(e);
+    });
 
   return (
-    <box>
-      <label label="<b>woo</b><i>hmm</i>" wrap={true} useMarkup={true}></label>
-      <label label="westford massachusetts"></label>
-    </box>
+    <With value={ipDetails}>
+      {(ipDetails) =>
+        ipDetails && (
+          <box orientation={Gtk.Orientation.VERTICAL}>
+            <label label={`<b>${ipDetails.ip}</b>`} useMarkup={true}></label>
+            <label
+              label={`${ipDetails.city}, ${ipDetails.region} ${ipDetails.country}`}
+            ></label>
+          </box>
+        )
+      }
+    </With>
   );
-  // return (
-  //   <With value={ipDetails}>
-  //     {(ipDetails) =>
-  //       ipDetails && (
-  //         <box>
-  //           <label label={`IP: ${ipDetails.ip}`}></label>
-  //           <label
-  //             label={`${ipDetails.city}, ${ipDetails.region} ${ipDetails.country}`}
-  //           ></label>
-  //         </box>
-  //       )
-  //     }
-  //   </With>
-  // );
 };
 
 // only handles 1 wireguard connection
