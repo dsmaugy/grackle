@@ -5,7 +5,7 @@ import { GetInfoFromIP, IpInfo } from "../util";
 import { Gtk } from "ags/gtk4";
 
 const WireguardDetails = () => {
-  const [ipDetails, setIpDetails] = createState<IpInfo | null>(null);
+  const [ipDetails, setIpDetails] = createState<IpInfo | undefined>(undefined);
 
   GetInfoFromIP()
     .then((info) => {
