@@ -1,4 +1,5 @@
 import { createBinding, With } from "ags";
+import { Gtk } from "ags/gtk4";
 import AstalNetwork from "gi://AstalNetwork?version=0.1";
 
 export const Wireless = () => {
@@ -14,19 +15,21 @@ export const Wireless = () => {
             <menubutton class="grackle-bar-item internet-button">
               <With value={activeAp}>
                 {(ap) => {
-                  const labelTxt = `I: ${ap.ssid}`;
-                  return (
-                    <levelbar
-                      value={createBinding(ap, "strength")}
-                      minValue={0}
-                      maxValue={100}
-                    >
-                      <box>
-                        <label label={labelTxt}></label>
-                        <image iconName="network-wireless-symbolic" />
-                      </box>
-                    </levelbar>
-                  );
+                  if (ap) {
+                    const labelTxt = `I: ${ap.ssid}`;
+                    return (
+                      <levelbar
+                        value={createBinding(ap, "strength")}
+                        minValue={0}
+                        maxValue={100}
+                      >
+                        <box halign={Gtk.Align.CENTER}>
+                          <label label={labelTxt}></label>
+                          <image iconName="network-wireless-symbolic" />
+                        </box>
+                      </levelbar>
+                    );
+                  }
                 }}
               </With>
             </menubutton>

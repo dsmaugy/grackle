@@ -1,4 +1,5 @@
 import { createBinding, For, With } from "ags";
+import { Gtk } from "ags/gtk4";
 import Hyprland from "gi://AstalHyprland?version=0.1";
 
 type StringMap = { [key: string]: string };
@@ -36,7 +37,7 @@ export const Workspaces = () => {
                     "ws-button" +
                     (fws.get_id() == ws.get_id() ? " focused-workspace" : "")
                   }
-                  onClicked={() => {
+                  onClicked={(s) => {
                     // some weird bug where hyprland will try to go to workspace that doesn't exist
                     if (fws.get_id() != ws.get_id()) {
                       hypr.dispatch("workspace", ws.get_id().toString());

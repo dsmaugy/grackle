@@ -1,20 +1,18 @@
+import { createBinding, For } from "ags";
+import { Astal, Gdk, Gtk } from "ags/gtk4";
 import app from "ags/gtk4/app";
-import { Astal, Gtk, Gdk } from "ags/gtk4";
-import { execAsync } from "ags/process";
 import { createPoll } from "ags/time";
-import { createBinding, createComputed, For, With } from "ags";
-import AstalWp from "gi://AstalWp?version=0.1";
-import AstalBattery from "gi://AstalBattery?version=0.1";
-import AstalNetwork from "gi://AstalNetwork?version=0.1";
-import AstalTray from "gi://AstalTray?version=0.1";
-import AstalMpris from "gi://AstalMpris?version=0.1";
 import AstalApps from "gi://AstalApps?version=0.1";
+import AstalMpris from "gi://AstalMpris?version=0.1";
+import AstalTray from "gi://AstalTray?version=0.1";
+import AstalWp from "gi://AstalWp?version=0.1";
 import GLib from "gi://GLib?version=2.0";
-import { WireguardStatus } from "./VPN";
-import { Workspaces } from "./Workspaces";
-import { Wireless } from "./Internet";
 import { Battery } from "./Battery";
 import { Brighness } from "./Brightness";
+import { Wireless } from "./Internet";
+import { WireguardStatus } from "./VPN";
+import { Workspaces } from "./Workspaces";
+import { Volume } from "./Volume";
 
 function AudioOutput() {
   const { defaultSpeaker: speaker } = AstalWp.get_default()!;
@@ -176,7 +174,8 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
         </box>
 
         <box $type="end">
-          <AudioOutput />
+          {/* <AudioOutput /> */}
+          <Volume />
           <Brighness />
           <Wireless />
           <Battery />
