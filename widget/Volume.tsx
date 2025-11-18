@@ -15,6 +15,9 @@ export const Volume = () => {
   const label = speakerStatus((stat) =>
     stat[1] ? "V: ̶M̶" : `V: ${Math.round(100 * (stat[0] / maxVol))}`,
   );
+  const className = speakerStatus((stat) =>
+    stat[1] ? "grackle-level-red" : "internet-button",
+  );
 
   return (
     <GrackleLevel
@@ -25,6 +28,7 @@ export const Volume = () => {
       onDragClick={(endValuePct) => {
         speaker.set_volume(endValuePct * maxVol);
       }}
+      className={className}
     />
   );
 };

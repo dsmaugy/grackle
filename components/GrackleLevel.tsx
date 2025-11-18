@@ -1,4 +1,4 @@
-import { Accessor, createComputed, With } from "ags";
+import { Accessor, createComputed, createState, With } from "ags";
 import { Gtk } from "ags/gtk4";
 
 type GrackleBarProps = {
@@ -7,6 +7,7 @@ type GrackleBarProps = {
   maxValue: number;
   label: Accessor<string>;
   onDragClick?: (endValuePct: number) => void;
+  className?: Accessor<string>;
 };
 
 export const GrackleLevel = ({
@@ -15,6 +16,7 @@ export const GrackleLevel = ({
   maxValue,
   label,
   onDragClick,
+  className = createState("internet-button")[0],
 }: GrackleBarProps) => {
   const displayAttrs = createComputed(
     [currentValue, label],
@@ -26,7 +28,7 @@ export const GrackleLevel = ({
 
   return (
     <button
-      class="grackle-bar-item internet-button"
+      class={className((cls) => `grackle-bar-item ${cls}`)}
       css="padding: 0;"
       $={
         onDragClick !== undefined

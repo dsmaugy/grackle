@@ -47,39 +47,6 @@ window.Bar {
     font-weight: bold;
   }
 
-  .internet-button {
-    border: 2px solid rgba(colors.$color14, 0.9);
-
-    button.toggle {
-      border-radius: 4px;
-      padding: 0;
-      background-color: rgba(0, 0, 0, 0);
-
-      image {
-        margin: 0px 6px;
-      }
-    }
-
-    // idk why an opacity filter is here by default in the first place
-    levelbar {
-      filter: none;
-    }
-
-    trough {
-      block {
-        border-radius: 4px;
-      }
-
-      block.filled {
-        background: rgba(colors.$color4, 0.8);
-      }
-
-      block.empty {
-        background: rgba(colors.$background, 0.6);
-      }
-    }
-  }
-
   .grackle-battery {
     font-size: 0.9rem;
     font-weight: bold;
@@ -142,4 +109,45 @@ popover.background {
   contents {
     background-color: rgba(colors.$color9, 0.93);
   }
+}
+
+@mixin grackle-level($filledBlock: rgba(colors.$color4, 0.8)) {
+  border: 2px solid rgba(colors.$color14, 0.9);
+
+  button.toggle {
+    border-radius: 4px;
+    padding: 0;
+    background-color: rgba(0, 0, 0, 0);
+
+    image {
+      margin: 0px 6px;
+    }
+  }
+
+  // idk why an opacity filter is here by default in the first place
+  levelbar {
+    filter: none;
+  }
+
+  trough {
+    block {
+      border-radius: 4px;
+    }
+
+    block.filled {
+      background: $filledBlock;
+    }
+
+    block.empty {
+      background: rgba(colors.$background, 0.6);
+    }
+  }
+}
+
+.grackle-level-red {
+  @include grackle-level(rgba(#fa4846, 0.65));
+}
+
+.internet-button {
+  @include grackle-level;
 }
