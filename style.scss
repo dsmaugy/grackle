@@ -2,14 +2,14 @@
 
 window.Bar {
   background: transparent;
-  color: rgba(colors.$foreground, 0.9);
-  font-weight: bold;
 
   > centerbox {
-    padding: 2px 0 2px 0;
-    background: rgba(colors.$color9, 0.3);
-    // border-bottom: 2px ridge;
-    // border-bottom: 1px solid rgba(colors.$foreground, 0.4);
+    margin: 16px 10px 0 10px;
+    border-radius: 14px;
+    padding: 2px;
+    background: rgba(colors.$color9, 0.45);
+    // border-bottom: 1px ridge;
+    border-bottom: 1px solid rgba(colors.$foreground, 0.4);
   }
 
   menubutton {
@@ -19,7 +19,8 @@ window.Bar {
   }
 
   .ws-button {
-    border-radius: 24px;
+    // border-radius: 24px;
+    border-radius: 16px;
     margin: 0 2px 0 2px;
     background: rgba(colors.$background, 0.6);
   }
