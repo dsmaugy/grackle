@@ -3,11 +3,11 @@ import { Gtk } from "ags/gtk4";
 
 type GrackleBarProps = {
   width: number;
-  currentValue: Accessor<number>;
+  currentValue: number;
   maxValue: number;
-  label: Accessor<string>;
+  label: string;
   onDragClick?: (endValuePct: number) => void;
-  className?: Accessor<string>;
+  className?: string;
 };
 
 export const GrackleLevel = ({
@@ -16,19 +16,11 @@ export const GrackleLevel = ({
   maxValue,
   label,
   onDragClick,
-  className = createState("internet-button")[0],
+  className = "grackle-level",
 }: GrackleBarProps) => {
-  const displayAttrs = createComputed(
-    [currentValue, label],
-    (value, label) => ({
-      value: value,
-      label: label,
-    }),
-  );
-
   return (
     <button
-      class={className((cls) => `grackle-bar-item ${cls}`)}
+      class={`grackle-bar-item ${className}`}
       css="padding: 0;"
       $={
         onDragClick !== undefined
@@ -47,9 +39,11 @@ export const GrackleLevel = ({
               dragGesture.connect("drag-end", () => {
                 self.remove_controller(dragGesture);
                 self.add_controller(dragGesture);
+                print("Drag end");
               });
               dragGesture.connect("drag-begin", (_, x) => {
                 gestureStartX = x;
+                print("Drag start");
               });
 
               const clickGesture = new Gtk.GestureClick();
@@ -68,22 +62,16 @@ export const GrackleLevel = ({
           : () => null
       }
     >
-      <With value={displayAttrs}>
-        {(attrs) => {
-          return (
-            <levelbar
-              value={Math.min(attrs.value, maxValue)}
-              minValue={0}
-              maxValue={maxValue}
-              widthRequest={width}
-            >
-              <box halign={Gtk.Align.CENTER}>
-                <label label={attrs.label}></label>
-              </box>
-            </levelbar>
-          );
-        }}
-      </With>
+      <levelbar
+        value={Math.min(currentValue, maxValue)}
+        minValue={0}
+        maxValue={maxValue}
+        widthRequest={width}
+      >
+        <box halign={Gtk.Align.CENTER}>
+          <label label={label}></label>
+        </box>
+      </levelbar>
     </button>
   );
 };

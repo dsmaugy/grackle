@@ -8,7 +8,7 @@ import AstalTray from "gi://AstalTray?version=0.1";
 import AstalWp from "gi://AstalWp?version=0.1";
 import GLib from "gi://GLib?version=2.0";
 import { Battery } from "./Battery";
-import { Brighness } from "./Brightness";
+import { Brightness } from "./Brightness";
 import { Wireless } from "./Internet";
 import { WireguardStatus } from "./VPN";
 import { Workspaces } from "./Workspaces";
@@ -176,7 +176,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
         <box $type="end">
           {/* <AudioOutput /> */}
           <Volume />
-          <Brighness />
+          {/* <Brightness /> */}
           <Wireless />
           <Battery />
           <WireguardStatus />
