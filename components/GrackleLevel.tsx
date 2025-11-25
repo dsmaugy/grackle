@@ -4,8 +4,8 @@ import { Gtk } from "ags/gtk4";
 type GrackleBarProps = {
   width: number;
   currentValue: Accessor<number>;
-  maxValue: number;
-  label: Accessor<string>;
+  maxValue: number | Accessor<number>;
+  label: string | Accessor<string>;
   onDragClick?: (endValuePct: number) => void;
   className?: Accessor<string>;
 };
@@ -16,13 +16,18 @@ export const GrackleLevel = ({
   maxValue,
   label,
   onDragClick,
-  className = createState("internet-button")[0],
+  className = createState("grackle-level")[0],
 }: GrackleBarProps) => {
   const displayAttrs = createComputed(
-    [currentValue, label],
-    (value, label) => ({
+    [
+      currentValue,
+      typeof label === "function" ? label : createState(label)[0],
+      typeof maxValue === "function" ? maxValue : createState(maxValue)[0],
+    ],
+    (value, label, maxValue) => ({
       value: value,
       label: label,
+      maxValue: maxValue,
     }),
   );
 
@@ -72,9 +77,9 @@ export const GrackleLevel = ({
         {(attrs) => {
           return (
             <levelbar
-              value={Math.min(attrs.value, maxValue)}
+              value={Math.min(attrs.value, attrs.maxValue)}
               minValue={0}
-              maxValue={maxValue}
+              maxValue={attrs.maxValue}
               widthRequest={width}
             >
               <box halign={Gtk.Align.CENTER}>

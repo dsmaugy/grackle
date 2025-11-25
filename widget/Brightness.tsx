@@ -2,6 +2,7 @@ import { createComputed, createState, With } from "ags";
 import { monitorFile } from "ags/file";
 import { Gtk } from "ags/gtk4";
 import { exec, execAsync } from "ags/process";
+import { GrackleLevel } from "../components/GrackleLevel";
 
 export const Brighness = () => {
   const buttonWidth = 100;
@@ -58,74 +59,26 @@ export const Brighness = () => {
   const brightness = createComputed(
     [maxBrightness, currBrightness],
     (max, curr) => ({
-      max: max,
-      curr: curr,
+      max: max ?? 1,
+      curr: curr ?? 0,
     }),
   );
 
   return (
-    <button
-      class="grackle-bar-item internet-button"
-      css="padding: 0;"
-      $={(self) => {
-        let gestureStartX = 0;
-        const dragGesture = new Gtk.GestureDrag();
-
-        dragGesture.connect("drag-update", (_, x, y) => {
-          const dragPct = Math.max(
-            Math.min((gestureStartX + x) / buttonWidth, 1),
-            0,
-          );
-          print(`Dragged: X=${x}, Y=${y}. PCT: ${dragPct}%`);
-          setCurrBrightness(dragPct * (maxBrightness.get() ?? 1));
-          execAsync(["brightnessctl", "set", `${dragPct * 100}%`]).catch((e) =>
-            print(e),
-          );
-        });
-        dragGesture.connect("drag-end", () => {
-          self.remove_controller(dragGesture);
-          self.add_controller(dragGesture);
-        });
-        dragGesture.connect("drag-begin", (_, x) => {
-          gestureStartX = x;
-        });
-
-        const clickGesture = new Gtk.GestureClick();
-        clickGesture.connect("pressed", (_, n_press, x) => {
-          print(`Clicked at ${x}`);
-          const clickPct = Math.max(Math.min(x / buttonWidth, 1), 0);
-
-          setCurrBrightness(clickPct * (maxBrightness.get() ?? 1));
-          execAsync(["brightnessctl", "set", `${clickPct * 100}%`]).catch((e) =>
-            print(e),
-          );
-          self.remove_controller(clickGesture);
-          self.add_controller(clickGesture);
-        });
-
-        self.add_controller(clickGesture);
-        self.add_controller(dragGesture);
+    <GrackleLevel
+      width={buttonWidth}
+      maxValue={maxBrightness((b) => b ?? 1)}
+      currentValue={currBrightness((b) => b ?? 0)}
+      label={brightness(
+        (obj) => `L: ${Math.round((obj.curr * 100) / obj.max)}`,
+      )}
+      onDragClick={(endValuePct) => {
+        // this ensures smooth dragging for brightness setting
+        setCurrBrightness(endValuePct * (maxBrightness.get() ?? 1));
+        execAsync(["brightnessctl", "set", `${endValuePct * 100}%`]).catch(
+          (e) => print(e),
+        );
       }}
-    >
-      <With value={brightness}>
-        {(brightness) => {
-          const max = brightness?.max ?? 1;
-          const curr = brightness?.curr ?? 0;
-          const currPct = Math.round((curr / max) * 100);
-          return (
-            <levelbar
-              value={curr}
-              minValue={0}
-              maxValue={max}
-              widthRequest={buttonWidth}
-            >
-              <box halign={Gtk.Align.CENTER}>
-                <label label={`L: ${currPct}`}></label>
-              </box>
-            </levelbar>
-          );
-        }}
-      </With>
-    </button>
+    />
   );
 };
