@@ -1,5 +1,4 @@
 import { createBinding, For, With } from "ags";
-import { Gtk } from "ags/gtk4";
 import Hyprland from "gi://AstalHyprland?version=0.1";
 
 type StringMap = { [key: string]: string };
@@ -23,6 +22,8 @@ export const Workspaces = () => {
     "7": "𝍦",
     "8": "𝍧",
     "9": "𝍨",
+    "10": "𝍲",
+    "special:magic": "🟈",
   };
 
   return (
@@ -31,22 +32,25 @@ export const Workspaces = () => {
         {(ws) => (
           <box>
             <With value={focusedWs}>
-              {(fws) => (
-                <button
-                  class={
-                    "ws-button" +
-                    (fws.get_id() == ws.get_id() ? " focused-workspace" : "")
-                  }
-                  onClicked={(s) => {
-                    // some weird bug where hyprland will try to go to workspace that doesn't exist
-                    if (fws.get_id() != ws.get_id()) {
-                      hypr.dispatch("workspace", ws.get_id().toString());
+              {(fws) => {
+                print(`workspace: ${ws.get_name()}`);
+                return (
+                  <button
+                    class={
+                      "ws-button" +
+                      (fws.get_id() == ws.get_id() ? " focused-workspace" : "")
                     }
-                  }}
-                >
-                  <label label={`${wsMap[ws.get_name()] ?? ""}`} />
-                </button>
-              )}
+                    onClicked={() => {
+                      // some weird bug where hyprland will try to go to workspace that doesn't exist
+                      if (fws.get_id() != ws.get_id()) {
+                        hypr.dispatch("workspace", ws.get_id().toString());
+                      }
+                    }}
+                  >
+                    <label label={`${wsMap[ws.get_name()] ?? ""}`} />
+                  </button>
+                );
+              }}
             </With>
           </box>
         )}

@@ -20,6 +20,9 @@ export const GetSvgIconPath = (iconName: string): string => {
 export const GetInfoFromIP = async () => {
   const res = await fetch("https://ipinfo.io/", {
     method: "GET",
+    headers: {
+      Authorization: GLib.getenv("IPINFO_TOKEN") ?? "",
+    },
   });
   if (!res.ok) return null;
 

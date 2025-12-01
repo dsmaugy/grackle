@@ -3,3 +3,5 @@ node_modules/
 
 # dynamically generated from pywal
 _colors.scss
+
+.env
