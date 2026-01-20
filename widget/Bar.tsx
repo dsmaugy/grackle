@@ -13,6 +13,7 @@ import { Wireless } from "./Internet";
 import { WireguardStatus } from "./VPN";
 import { Workspaces } from "./Workspaces";
 import { Volume } from "./Volume";
+import { Media } from "./Media";
 
 function AudioOutput() {
   const { defaultSpeaker: speaker } = AstalWp.get_default()!;
@@ -169,7 +170,8 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
         </box>
 
         <box $type="center">
-          {/* <Mpris /> */}
+          <Mpris />
+          <Media />
           <Clock />
         </box>
 
