@@ -170,7 +170,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
         </box>
 
         <box $type="center">
-          <Mpris />
+          {/* <Mpris /> */}
           <Media />
           <Clock />
         </box>
