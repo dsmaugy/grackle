@@ -11,10 +11,15 @@ export function Media() {
   const maxChars = 15;
   // TODO: this doesnt work
   const validPlayers = players((p) => p.filter((l) => l.title || l.artist));
-
+  // const l = createComputed([players], (ps) => {
+  //   ps.forEach((player) => {
+  //
+  //   })
+  // })
+  const validPlayerDetector = (p: AstalMpris.Player) => p.title || p.artist;
   return (
     // TODO: fix blank vivaldi being detected as a player
-    <box class={validPlayers((p) => (p.length > 0 ? "media-display" : ""))}>
+    <box class={"media-display"}>
       <For each={players}>
         {(player) => {
           print("Media player detected:", player.busName);

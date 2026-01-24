@@ -56,13 +56,10 @@ export const Brighness = () => {
 
   updateBrightness();
 
-  const brightness = createComputed(
-    [maxBrightness, currBrightness],
-    (max, curr) => ({
-      max: max ?? 1,
-      curr: curr ?? 0,
-    }),
-  );
+  const brightness = createComputed(() => ({
+    max: maxBrightness() ?? 1,
+    curr: currBrightness() ?? 0,
+  }));
 
   return (
     <GrackleLevel
@@ -74,7 +71,7 @@ export const Brighness = () => {
       )}
       onDragClick={(endValuePct) => {
         // this ensures smooth dragging for brightness setting
-        setCurrBrightness(endValuePct * (maxBrightness.get() ?? 1));
+        setCurrBrightness(endValuePct * (maxBrightness.peek() ?? 1));
         execAsync(["brightnessctl", "set", `${endValuePct * 100}%`]).catch(
           (e) => print(e),
         );

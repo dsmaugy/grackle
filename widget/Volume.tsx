@@ -8,15 +8,15 @@ export const Volume = () => {
   const { defaultSpeaker: speaker } = AstalWp.get_default()!;
 
   const volume = createBinding(speaker, "volume");
-  const speakerStatus = createComputed([
-    volume,
-    createBinding(speaker, "mute"),
-  ]);
+  const speakerStatus = createComputed(() => ({
+    volume: volume(),
+    mute: createBinding(speaker, "mute")(),
+  }));
   const label = speakerStatus((stat) =>
-    stat[1] ? "V: ̶M̶" : `V: ${Math.round(100 * (stat[0] / maxVol))}`,
+    stat.mute ? "V: ̶M̶" : `V: ${Math.round(100 * (stat.volume / maxVol))}`,
   );
   const className = speakerStatus((stat) =>
-    stat[1] ? "grackle-level-red" : "internet-button",
+    stat.mute ? "grackle-level-red" : "internet-button",
   );
 
   return (

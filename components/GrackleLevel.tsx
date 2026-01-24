@@ -18,18 +18,12 @@ export const GrackleLevel = ({
   onDragClick,
   className = createState("grackle-level")[0],
 }: GrackleBarProps) => {
-  const displayAttrs = createComputed(
-    [
-      currentValue,
-      typeof label === "function" ? label : createState(label)[0],
-      typeof maxValue === "function" ? maxValue : createState(maxValue)[0],
-    ],
-    (value, label, maxValue) => ({
-      value: value,
-      label: label,
-      maxValue: maxValue,
-    }),
-  );
+  const displayAttrs = createComputed(() => ({
+    value: currentValue(),
+    label: typeof label === "function" ? label() : createState(label)[0](),
+    maxValue:
+      typeof maxValue === "function" ? maxValue() : createState(maxValue)[0](),
+  }));
 
   return (
     <button

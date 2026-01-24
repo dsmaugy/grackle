@@ -7,8 +7,7 @@ export const Battery = () => {
   const pctBinding = createBinding(battery, "percentage");
   const chargeBinding = createBinding(battery, "charging");
   const pctLabel = createComputed(
-    [pctBinding, chargeBinding],
-    (p, c) => `B: ${Math.floor(p * 100)} ${c ? "↑" : "↓"}`,
+    () => `B: ${Math.floor(pctBinding() * 100)} ${chargeBinding() ? "↑" : "↓"}`,
   );
 
   return (
