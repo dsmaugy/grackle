@@ -98,13 +98,20 @@ window.Bar {
   .media-display {
     margin: 2px 4px;
     padding: 0px 4px;
-    border-radius: 0px 16px 0px 0px;
+    border-radius: 0px 16px 0px 16px;
     background: rgba(colors.$background, 0.6);
 
-    box {
+    .media-art-box {
+      border-radius: 32px;
+
       image {
         margin-right: 6px;
       }
+    }
+
+    .media-status-button {
+      margin: 0px 2px;
+      background: none;
     }
   }
 }
