@@ -14,6 +14,7 @@ import { WireguardStatus } from "./VPN";
 import { Workspaces } from "./Workspaces";
 import { Volume } from "./Volume";
 import { Media } from "./Media";
+import { Power } from "./Power";
 
 function AudioOutput() {
   const { defaultSpeaker: speaker } = AstalWp.get_default()!;
@@ -183,6 +184,7 @@ export default function Bar(gdkmonitor: Gdk.Monitor) {
           <Battery />
           <WireguardStatus />
           <Tray />
+          <Power />
         </box>
       </centerbox>
     </window>
