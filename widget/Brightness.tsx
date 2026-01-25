@@ -1,6 +1,5 @@
 import { createComputed, createState, With } from "ags";
 import { monitorFile } from "ags/file";
-import { Gtk } from "ags/gtk4";
 import { exec, execAsync } from "ags/process";
 import { GrackleLevel } from "../components/GrackleLevel";
 

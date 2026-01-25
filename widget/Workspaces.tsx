@@ -33,7 +33,6 @@ export const Workspaces = () => {
           <box>
             <With value={focusedWs}>
               {(fws) => {
-                print(`workspace: ${ws.get_name()}`);
                 return (
                   <button
                     class={
