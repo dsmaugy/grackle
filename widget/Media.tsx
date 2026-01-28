@@ -35,7 +35,7 @@ export function Media() {
       <For each={validPlayers}>
         {(player) => {
           print("Media player detected:", player.busName);
-          print("Cover art:", player.coverArt);
+          print(`Cover art: '${player.coverArt}'`);
 
           return (
             <box>
@@ -45,7 +45,11 @@ export function Media() {
                   file={createBinding(
                     player,
                     "coverArt",
-                  )((s) => s ?? "static/images/chicken.png")}
+                  )((s) =>
+                    s === ""
+                      ? "/home/darwin/projects/grackle/static/images/chicken.png"
+                      : s,
+                  )}
                 />
               </box>
               <box orientation={Gtk.Orientation.VERTICAL}>
