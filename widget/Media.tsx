@@ -46,7 +46,8 @@ export function Media() {
                     player,
                     "coverArt",
                   )((s) =>
-                    s === ""
+                    // `s` is supposed to be a string but it can be null on some versions
+                    s === "" || !s
                       ? "/home/darwin/projects/grackle/static/images/chicken.png"
                       : s,
                   )}
